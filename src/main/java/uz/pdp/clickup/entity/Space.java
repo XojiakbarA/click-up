@@ -29,11 +29,33 @@ public class Space extends BaseEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private Attachment avatar;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private AccessType accessType;
+
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @ManyToMany
     private Set<ClickApp> clickApps = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany
+    private Set<View> views = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE)
+    private Set<SpaceUser> members = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE)
+    private Set<Folder> folders = new HashSet<>();
 
     public Character getInitialLetter() {
         return name.charAt(0);

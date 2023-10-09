@@ -5,25 +5,18 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.time.LocalDateTime;
+import uz.pdp.clickup.enums.AuthorityType;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity(name = "workspace_users")
-public class WorkspaceUser extends BaseEntity {
+@Entity(name = "folder_users")
+public class FolderUser extends BaseEntity {
     @ManyToOne(optional = false)
-    private Workspace workspace;
+    private Folder folder;
 
     @ManyToOne(optional = false)
     private User member;
 
-    @ManyToOne(optional = false)
-    private WorkspaceRole workspaceRole;
-
-    @Column
-    private LocalDateTime dateInvited;
-
-    @Column
-    private LocalDateTime dateJoined;
+    @Column(nullable = false)
+    private AuthorityType taskAuthority;
 }

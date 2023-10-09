@@ -1,30 +1,34 @@
 package uz.pdp.clickup.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToMany;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import uz.pdp.clickup.enums.AuthorityType;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity(name = "roles")
-public class Role extends BaseEntity {
+@Entity(name = "tags")
+public class Tag extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
-    private Set<AuthorityType> authorities = new HashSet<>();
+    @ManyToOne(optional = false)
+    private Workspace workspace;
+
+    @ManyToOne
+    private Color color;
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "role")
-    private Set<User> users = new HashSet<>();
+    @ManyToMany(mappedBy = "tags")
+    private Set<Task> tasks = new HashSet<>();
 }

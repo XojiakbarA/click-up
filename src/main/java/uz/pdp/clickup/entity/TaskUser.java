@@ -1,30 +1,30 @@
 package uz.pdp.clickup.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
-import uz.pdp.clickup.enums.AuthorityType;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-@Entity(name = "roles")
-public class Role extends BaseEntity {
-    @Column(nullable = false, unique = true)
-    private String name;
+@Entity(name = "task_users")
+public class TaskUser extends BaseEntity {
+    @ManyToOne(optional = false)
+    private Task task;
 
-    @Column(nullable = false)
-    private Set<AuthorityType> authorities = new HashSet<>();
+    @ManyToOne(optional = false)
+    private User assignedUser;
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "role")
-    private Set<User> users = new HashSet<>();
+    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.REMOVE)
+    private Set<Item> assignedItems = new HashSet<>();
 }

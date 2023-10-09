@@ -36,13 +36,19 @@ public class Workspace extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
-    private Set<WorkspaceUser> workspaceUsers = new HashSet<>();
+    private Set<WorkspaceUser> members = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
     private Set<WorkspaceRole> workspaceRoles = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany
+    private Set<Tag> tags = new HashSet<>();
 
     public Character getInitialLetter() {
         return name.charAt(0);

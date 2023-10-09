@@ -49,8 +49,32 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
-    private Set<WorkspaceUser> workspaceUsers = new HashSet<>();
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<WorkspaceUser> joinedWorkspaces = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<SpaceUser> joinedSpaces = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<FolderUser> joinedFolders = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    private Set<ListUser> joinedLists = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.REMOVE)
+    private Set<TaskUser> joinedTasks = new HashSet<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
