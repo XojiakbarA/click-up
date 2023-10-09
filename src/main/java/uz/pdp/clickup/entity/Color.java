@@ -11,4 +11,7 @@ import lombok.EqualsAndHashCode;
 public class Color extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
+
+    @Column(nullable = false, unique = true)
+    private String hexCode;
 }

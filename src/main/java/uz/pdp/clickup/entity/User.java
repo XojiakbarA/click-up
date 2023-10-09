@@ -31,6 +31,9 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne
     private Attachment avatar;
 
+    @Column
+    private String verifyCode;
+
     @ManyToOne(optional = false)
     private Role role;
 
