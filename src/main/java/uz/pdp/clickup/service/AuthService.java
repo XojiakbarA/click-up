@@ -1,6 +1,5 @@
 package uz.pdp.clickup.service;
 
-import uz.pdp.clickup.dto.request.auth.JoinRequest;
 import uz.pdp.clickup.dto.request.auth.LoginRequest;
 import uz.pdp.clickup.dto.request.auth.RegisterRequest;
 import uz.pdp.clickup.dto.request.auth.VerifyRequest;

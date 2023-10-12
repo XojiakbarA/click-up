@@ -3,6 +3,7 @@ package uz.pdp.clickup.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import uz.pdp.clickup.dto.request.WorkspaceAuthoritiesRequest;
+import uz.pdp.clickup.dto.request.WorkspaceRoleRequest;
 import uz.pdp.clickup.dto.view.WorkspaceRoleView;
 import uz.pdp.clickup.entity.Workspace;
 import uz.pdp.clickup.entity.WorkspaceRole;
@@ -13,6 +14,7 @@ import uz.pdp.clickup.exception.ResourceNotFoundException;
 import uz.pdp.clickup.mapper.WorkspaceRoleMapper;
 import uz.pdp.clickup.repository.WorkspaceRoleRepository;
 import uz.pdp.clickup.service.WorkspaceRoleService;
+import uz.pdp.clickup.service.WorkspaceService;
 
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +29,8 @@ public class WorkspaceRoleServiceImpl implements WorkspaceRoleService {
     @Autowired
     private WorkspaceRoleRepository workspaceRoleRepository;
     @Autowired
+    private WorkspaceService workspaceService;
+    @Autowired
     private WorkspaceRoleMapper workspaceRoleMapper;
 
     private WorkspaceRole save(WorkspaceRole workspaceRole) {
@@ -37,6 +41,11 @@ public class WorkspaceRoleServiceImpl implements WorkspaceRoleService {
     }
     private void checkToExistsByName(String name, Long workspaceId) {
         if (workspaceRoleRepository.existsByNameAndWorkspaceId(name, workspaceId)) {
+            throw new ResourceExistsException(resourceName, "name", name);
+        }
+    }
+    private void checkToExistsByName(String name, Long workspaceId, Long id) {
+        if (workspaceRoleRepository.existsByNameAndWorkspaceIdAndIdNot(name, workspaceId, id)) {
             throw new ResourceExistsException(resourceName, "name", name);
         }
     }
@@ -74,6 +83,50 @@ public class WorkspaceRoleServiceImpl implements WorkspaceRoleService {
     }
 
     @Override
+    public WorkspaceRoleView create(WorkspaceRoleRequest request) {
+        checkToExistsByName(request.getName(), request.getWorkspaceId());
+
+        WorkspaceRole workspaceRole = new WorkspaceRole();
+
+        String name = request.getName();
+        Workspace workspace = workspaceService.findById(request.getWorkspaceId());
+        Set<WorkspaceAuthorityType> workspaceAuthorities = findById(request.getExtendsWorkspaceRoleId()).getWorkspaceAuthorities();
+
+        setAttributes(workspaceRole, name, workspace, workspaceAuthorities);
+
+        return workspaceRoleMapper.mapToView(workspaceRole);
+    }
+
+    @Override
+    public List<WorkspaceRole> createInitWorkspaceRoles(Workspace workspace) {
+        Set<WorkspaceAuthorityType> workspaceAuthorities = Arrays.stream(WorkspaceAuthorityType.values()).collect(Collectors.toSet());
+
+        Set<WorkspaceRole> workspaceRoles = Arrays.stream(WorkspaceRoleType.values())
+                .map(type -> new WorkspaceRole(type.name(), workspace, workspaceAuthorities))
+                .collect(Collectors.toSet());
+
+        return saveAll(workspaceRoles);
+    }
+
+    @Override
+    public WorkspaceRoleView update(WorkspaceRoleRequest request, Long id) {
+        checkToExistsByName(request.getName(), request.getWorkspaceId(), id);
+
+        WorkspaceRole workspaceRole = findById(id);
+
+        String name = request.getName();
+        Workspace workspace = workspaceService.findById(request.getWorkspaceId());
+        Set<WorkspaceAuthorityType> workspaceAuthorities = null;
+        if (request.getExtendsWorkspaceRoleId() != null) {
+            workspaceAuthorities = findById(request.getExtendsWorkspaceRoleId()).getWorkspaceAuthorities();
+        }
+
+        setAttributes(workspaceRole, name, workspace, workspaceAuthorities);
+
+        return workspaceRoleMapper.mapToView(workspaceRole);
+    }
+
+    @Override
     public void deleteById(Long id) {
         if (!workspaceRoleRepository.existsById(id)) {
             throw new ResourceNotFoundException(resourceName, "id", id);
@@ -108,16 +161,5 @@ public class WorkspaceRoleServiceImpl implements WorkspaceRoleService {
         workspaceRole.getWorkspaceAuthorities().removeAll(workspaceAuthorities);
 
         return workspaceRoleMapper.mapToView(workspaceRole);
-    }
-
-    @Override
-    public List<WorkspaceRole> createInitWorkspaceRoles(Workspace workspace) {
-        Set<WorkspaceAuthorityType> workspaceAuthorities = Arrays.stream(WorkspaceAuthorityType.values()).collect(Collectors.toSet());
-
-        Set<WorkspaceRole> workspaceRoles = Arrays.stream(WorkspaceRoleType.values())
-                .map(type -> new WorkspaceRole(type.name(), workspace, workspaceAuthorities))
-                .collect(Collectors.toSet());
-
-        return saveAll(workspaceRoles);
     }
 }

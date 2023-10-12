@@ -1,7 +1,5 @@
 package uz.pdp.clickup.service;
 
-import uz.pdp.clickup.entity.User;
-import uz.pdp.clickup.entity.Workspace;
 import uz.pdp.clickup.entity.WorkspaceUser;
 
 public interface MessageService {

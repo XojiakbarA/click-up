@@ -27,4 +27,9 @@ public class View extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "views")
     private Set<Space> spaces = new HashSet<>();
+
+    public void removeSpace(Space space) {
+        this.spaces.remove(space);
+        space.getViews().remove(this);
+    }
 }

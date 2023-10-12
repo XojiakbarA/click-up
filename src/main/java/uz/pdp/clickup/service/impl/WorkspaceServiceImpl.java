@@ -1,11 +1,7 @@
 package uz.pdp.clickup.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import uz.pdp.clickup.dto.request.WorkspaceRoleRequest;
-import uz.pdp.clickup.dto.view.WorkspaceRoleView;
 import uz.pdp.clickup.entity.*;
 import uz.pdp.clickup.enums.WorkspaceAuthorityType;
 import uz.pdp.clickup.enums.WorkspaceRoleType;
@@ -16,9 +12,11 @@ import uz.pdp.clickup.exception.ResourceExistsException;
 import uz.pdp.clickup.exception.ResourceNotFoundException;
 import uz.pdp.clickup.repository.WorkspaceRepository;
 import uz.pdp.clickup.service.*;
+import uz.pdp.clickup.util.Util;
 
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class WorkspaceServiceImpl implements WorkspaceService {
@@ -34,13 +32,9 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     @Autowired
     private ColorService colorService;
     @Autowired
-    private WorkspaceRoleService workspaceRoleService;
-    @Autowired
-    private WorkspaceUserService workspaceUserService;
-    @Autowired
-    private MessageService messageService;
-    @Autowired
     private WorkspaceMapper workspaceMapper;
+    @Autowired
+    private Util util;
 
     private Workspace save(Workspace workspace) {
         return workspaceRepository.save(workspace);
@@ -55,12 +49,13 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new ResourceExistsException(resourceName, "name", name);
         }
     }
-    private WorkspaceRole getWorkspaceRole(WorkspaceRoleType workspaceRoleType, Collection<WorkspaceRole> workspaceRoles) {
-        return workspaceRoles.stream()
-                .filter(r -> r.getName().equals(workspaceRoleType.name()))
-                .findFirst().orElse(null);
+    private Set<WorkspaceRole> buildInitWorkspaceRoles(Workspace workspace) {
+        return Arrays.stream(WorkspaceRoleType.values()).map(type -> {
+            Set<WorkspaceAuthorityType> workspaceAuthorities = Arrays.stream(WorkspaceAuthorityType.values()).collect(Collectors.toSet());
+            return new WorkspaceRole(type.name(), workspace, workspaceAuthorities);
+        }).collect(Collectors.toSet());
     }
-    private void setAttributes(Workspace workspace, String name, Color color, User owner) {
+    private void setAttributes(Workspace workspace, String name, Color color, User owner, Set<WorkspaceUser> persons, Set<WorkspaceRole> workspaceRoles) {
         if (name != null && !name.isBlank()) {
             workspace.setName(name);
         }
@@ -69,6 +64,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         }
         if (owner != null) {
             workspace.setOwner(owner);
+        }
+        if (persons != null && !persons.isEmpty()) {
+            workspace.setPersons(persons);
+        }
+        if (workspaceRoles != null && !workspaceRoles.isEmpty()) {
+            workspace.setWorkspaceRoles(workspaceRoles);
         }
     }
     private void setAttributes(Workspace workspace, String name, Color color) {
@@ -81,9 +82,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public List<WorkspaceView> getAllByAuthUserId() {
-        User authUser = authService.getAuthUser();
-        return workspaceRepository.findAllByOwnerId(authUser.getId()).stream()
+    public List<WorkspaceView> getAllByUserId(Long userId) {
+        return workspaceRepository.findAllByOwnerId(userId).stream()
                 .map(workspaceMapper::mapToView).toList();
     }
 
@@ -102,14 +102,10 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         String name = request.getName();
         Color color = colorService.findById(request.getColorId());
+        Set<WorkspaceRole> workspaceRoles = buildInitWorkspaceRoles(workspace);
+        WorkspaceUser workspaceUser = new WorkspaceUser(workspace, authUser, util.getWorkspaceRoleByType(WorkspaceRoleType.OWNER, workspaceRoles));
 
-        setAttributes(workspace, name, color, authUser);
-
-        List<WorkspaceRole> workspaceRoles = workspaceRoleService.createInitWorkspaceRoles(workspace);
-
-        WorkspaceRole ownerRole = getWorkspaceRole(WorkspaceRoleType.OWNER, workspaceRoles);
-
-        workspaceUserService.create(workspace, ownerRole, authUser);
+        setAttributes(workspace, name, color, authUser, Set.of(workspaceUser), workspaceRoles);
 
         return workspaceMapper.mapToView(save(workspace));
     }
@@ -119,29 +115,12 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
         Workspace workspace = new Workspace();
 
-        setAttributes(workspace, name, color, owner);
+        Set<WorkspaceRole> workspaceRoles = buildInitWorkspaceRoles(workspace);
+        WorkspaceUser workspaceUser = new WorkspaceUser(workspace, owner, util.getWorkspaceRoleByType(WorkspaceRoleType.OWNER, workspaceRoles));
 
-        List<WorkspaceRole> workspaceRoles = workspaceRoleService.createInitWorkspaceRoles(workspace);
-
-        WorkspaceRole ownerRole = getWorkspaceRole(WorkspaceRoleType.OWNER, workspaceRoles);
-
-        workspaceUserService.create(workspace, ownerRole, owner);
+        setAttributes(workspace, name, color, owner, Set.of(workspaceUser), workspaceRoles);
 
         save(workspace);
-    }
-
-    @Override
-    public WorkspaceRoleView createWorkspaceRole(WorkspaceRoleRequest request, Long id) {
-        Workspace workspace = findById(id);
-        String name = request.getName();
-        Set<WorkspaceAuthorityType> workspaceAuthorities = null;
-
-        if (request.getExtendsWorkspaceRoleId() != null) {
-            WorkspaceRole workspaceRole = workspaceRoleService.findById(request.getExtendsWorkspaceRoleId());
-            workspaceAuthorities = workspaceRole.getWorkspaceAuthorities();
-        }
-
-        return workspaceRoleService.create(name, workspace, workspaceAuthorities);
     }
 
     @Override
@@ -168,17 +147,6 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     }
 
     @Override
-    public void invitePersonByEmail(Long id, String email) {
-        Workspace workspace = findById(id);
-        User person = userService.findByEmail(email);
-        WorkspaceRole memberRole = getWorkspaceRole(WorkspaceRoleType.MEMBER, workspace.getWorkspaceRoles());
-
-        WorkspaceUser workspaceUser = workspaceUserService.create(workspace, memberRole, person);
-
-        messageService.sendInviteMessage(email, workspaceUser, authService.getAuthUser().getFullName());
-    }
-
-    @Override
     public void deleteById(Long id) {
         if (!workspaceRepository.existsById(id)) {
             throw new ResourceNotFoundException(resourceName, "id", id);
@@ -188,6 +156,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 
     @Override
     public Workspace findById(Long id) {
+        if (id == null) return null;
         return workspaceRepository.findById(id).orElseThrow(
                 () -> new ResourceNotFoundException(resourceName, "id", id)
         );

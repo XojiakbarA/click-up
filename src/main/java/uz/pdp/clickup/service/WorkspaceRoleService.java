@@ -15,6 +15,12 @@ public interface WorkspaceRoleService {
 
     WorkspaceRoleView create(String name, Workspace workspace, Set<WorkspaceAuthorityType> workspaceAuthorities);
 
+    WorkspaceRoleView create(WorkspaceRoleRequest request);
+
+    List<WorkspaceRole> createInitWorkspaceRoles(Workspace workspace);
+
+    WorkspaceRoleView update(WorkspaceRoleRequest request, Long id);
+
     void deleteById(Long id);
 
     WorkspaceRole findById(Long id);
@@ -22,6 +28,4 @@ public interface WorkspaceRoleService {
     WorkspaceRoleView addWorkspaceAuthorities(WorkspaceAuthoritiesRequest request, Long id);
 
     WorkspaceRoleView removeWorkspaceAuthorities(WorkspaceAuthoritiesRequest request, Long id);
-
-    List<WorkspaceRole> createInitWorkspaceRoles(Workspace workspace);
 }

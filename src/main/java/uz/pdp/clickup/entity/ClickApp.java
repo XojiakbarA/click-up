@@ -27,4 +27,9 @@ public class ClickApp extends BaseEntity {
     @EqualsAndHashCode.Exclude
     @ManyToMany(mappedBy = "clickApps")
     private Set<Space> spaces = new HashSet<>();
+  
+    public void removeSpace(Space space) {
+        this.spaces.remove(space);
+        space.getClickApps().remove(this);
+    }
 }

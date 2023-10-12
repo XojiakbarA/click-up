@@ -7,16 +7,12 @@ import lombok.Data;
 import uz.pdp.clickup.marker.OnCreate;
 
 @Data
-public class WorkspaceRoleRequest {
+public class ClickAppRequest {
     @NotNull(message = "name must not be null", groups = OnCreate.class)
     @NotBlank(message = "name must not be empty", groups = OnCreate.class)
     private String name;
 
-    @NotNull(message = "workspaceId must not be null", groups = OnCreate.class)
-    @Positive(message = "workspaceId must be positive")
-    private Long workspaceId;
-
-    @NotNull(message = "extendsWorkspaceRoleId must not be null", groups = OnCreate.class)
-    @Positive(message = "extendsWorkspaceRoleId must be positive")
-    private Long extendsWorkspaceRoleId;
+    @NotNull(message = "iconId must not be null", groups = OnCreate.class)
+    @Positive(message = "iconId must be positive")
+    private Long iconId;
 }

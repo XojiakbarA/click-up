@@ -8,8 +8,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import uz.pdp.clickup.entity.User;
-import uz.pdp.clickup.entity.Workspace;
 import uz.pdp.clickup.entity.WorkspaceUser;
 import uz.pdp.clickup.service.MessageService;
 

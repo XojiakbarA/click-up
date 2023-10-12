@@ -20,7 +20,7 @@ public class Workspace extends BaseEntity {
     @ManyToOne
     private Color color;
 
-    @ManyToOne
+    @ManyToOne(optional = false)
     private User owner;
 
     @OneToOne(cascade = CascadeType.ALL)
