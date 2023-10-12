@@ -5,6 +5,7 @@ import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import uz.pdp.clickup.dto.request.auth.LoginRequest;
@@ -31,6 +32,15 @@ public class AuthServiceImpl implements AuthService {
     private MessageService messageService;
 
     @Override
+    public User getAuthUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication.isAuthenticated() && !authentication.getPrincipal().equals("anonymousUser")) {
+            return (User) authentication.getPrincipal();
+        }
+        return null;
+    }
+
+    @Override
     public String login(LoginRequest request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
@@ -47,6 +57,7 @@ public class AuthServiceImpl implements AuthService {
                 request.getFullName(),
                 request.getEmail(),
                 request.getPassword(),
+                false,
                 request.getColorId(),
                 RoleType.USER.name()
         );
@@ -67,5 +78,4 @@ public class AuthServiceImpl implements AuthService {
 
         userService.save(user);
     }
-
 }

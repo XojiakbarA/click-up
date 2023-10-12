@@ -13,7 +13,7 @@ public class ListUser extends BaseEntity {
     private List list;
 
     @ManyToOne(optional = false)
-    private User member;
+    private User person;
 
     @Column(nullable = false)
     private AuthorityType taskAuthority;

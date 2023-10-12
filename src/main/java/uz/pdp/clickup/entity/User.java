@@ -52,31 +52,31 @@ public class User extends BaseEntity implements UserDetails {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Set<WorkspaceUser> joinedWorkspaces = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Set<SpaceUser> joinedSpaces = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Set<FolderUser> joinedFolders = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "member", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Set<ListUser> joinedLists = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "assignedUser", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "person", cascade = CascadeType.REMOVE)
     private Set<TaskUser> joinedTasks = new HashSet<>();
 
     @Override

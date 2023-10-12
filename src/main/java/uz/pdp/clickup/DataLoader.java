@@ -4,9 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import uz.pdp.clickup.enums.AuthorityType;
-import uz.pdp.clickup.service.ColorService;
-import uz.pdp.clickup.service.RoleService;
-import uz.pdp.clickup.service.UserService;
+import uz.pdp.clickup.service.*;
 
 import static uz.pdp.clickup.enums.RoleType.*;
 
@@ -27,9 +25,9 @@ public class DataLoader implements CommandLineRunner {
 
         colorService.create("white", "#ffffff");
 
-        userService.create("First Admin", "admin@mail.com", "123", 1L, ADMIN.name());
-        userService.create("First Moderator", "moderator@mail.com", "123", 1L, MODERATOR.name());
-        userService.create("First User", "user@mail.com", "123", 1L, USER.name());
+        userService.create("First Admin", "admin@mail.com", "123", true, 1L, ADMIN.name());
+        userService.create("First Moderator", "moderator@mail.com", "123", true, 1L, MODERATOR.name());
+        userService.create("First User", "user@mail.com", "123", true, 1L, USER.name());
     }
     
 }

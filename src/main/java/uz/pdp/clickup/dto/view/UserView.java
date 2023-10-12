@@ -1,20 +1,13 @@
 package uz.pdp.clickup.dto.view;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
-public class UserView {
-    private Long id;
+public class UserView extends BaseView {
     private String fullName;
     private String email;
     private RoleView role;
     private Boolean accountNonLocked;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private UserAuditorView createdBy;
-    private UserAuditorView updatedBy;
 }

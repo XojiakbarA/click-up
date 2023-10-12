@@ -15,7 +15,7 @@ public class FolderUser extends BaseEntity {
     private Folder folder;
 
     @ManyToOne(optional = false)
-    private User member;
+    private User person;
 
     @Column(nullable = false)
     private AuthorityType taskAuthority;

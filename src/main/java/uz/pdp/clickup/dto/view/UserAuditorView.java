@@ -1,11 +1,11 @@
 package uz.pdp.clickup.dto.view;
 
-import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
+@EqualsAndHashCode(callSuper = true)
 @Data
-@Builder
-public class UserAuditorView {
+public class UserAuditorView extends BaseView {
     private Long id;
     private String email;
     private String roleName;

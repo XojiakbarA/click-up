@@ -1,33 +1,27 @@
 package uz.pdp.clickup.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
-import uz.pdp.clickup.enums.WorkspaceRoleType;
+import jakarta.persistence.*;
+import lombok.*;
+import uz.pdp.clickup.enums.WorkspaceAuthorityType;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 @Entity(name = "workspace_roles")
+@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "workspace_id" }) })
 public class WorkspaceRole extends BaseEntity {
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @ManyToOne(optional = false)
     private Workspace workspace;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private WorkspaceRoleType extendsRole;
+    @Column(nullable = false)
+    private Set<WorkspaceAuthorityType> workspaceAuthorities = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
@@ -35,9 +29,9 @@ public class WorkspaceRole extends BaseEntity {
     @OneToMany(mappedBy = "workspaceRole")
     private Set<WorkspaceUser> workspaceUsers = new HashSet<>();
 
-    @JsonIgnore
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "workspaceRole")
-    private Set<WorkspaceAuthority> workspaceAuthorities = new HashSet<>();
+    public WorkspaceRole(String name, Workspace workspace, Set<WorkspaceAuthorityType> workspaceAuthorities) {
+        this.name = name;
+        this.workspace = workspace;
+        this.workspaceAuthorities = workspaceAuthorities;
+    }
 }

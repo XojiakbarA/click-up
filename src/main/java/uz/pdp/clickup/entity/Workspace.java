@@ -35,13 +35,13 @@ public class Workspace extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
-    private Set<WorkspaceUser> members = new HashSet<>();
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
+    private Set<WorkspaceUser> persons = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL)
     private Set<WorkspaceRole> workspaceRoles = new HashSet<>();
 
     @JsonIgnore

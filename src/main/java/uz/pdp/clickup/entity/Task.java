@@ -56,7 +56,7 @@ public class Task extends BaseEntity {
     private LocalTime endTime;
 
     @Column
-    private LocalDateTime activedAt;
+    private LocalDateTime activatedAt;
 
     @JsonIgnore
     @ToString.Exclude
@@ -74,7 +74,7 @@ public class Task extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "task", cascade = CascadeType.REMOVE)
-    private Set<TaskUser> assignedUsers = new HashSet<>();
+    private Set<TaskUser> persons = new HashSet<>();
 
     @JsonIgnore
     @ToString.Exclude

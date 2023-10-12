@@ -44,6 +44,11 @@ public class RoleServiceImpl implements RoleService {
     private Set<AuthorityType> mapStringsToAuthorities(Set<String> strings) {
         return strings.stream().map(a -> AuthorityType.valueOf(a.toUpperCase())).collect(Collectors.toSet());
     }
+    private void setAttributes(RoleRequest request, Role role) {
+        if (request.getName() != null && !request.getName().isBlank()) {
+            role.setName(request.getName());
+        }
+    }
 
     @Override
     public Role findByName(String name) {
@@ -86,20 +91,22 @@ public class RoleServiceImpl implements RoleService {
 
         Role role = new Role();
 
-        roleMapper.mapToEntity(role, request);
+        setAttributes(request, role);
 
         return roleMapper.mapToView(save(role));
     }
+
     @Override
     public RoleView update(RoleRequest request, Long id) {
         checkToExistsByName(request.getName(), id);
 
         Role role = findById(id);
 
-        roleMapper.mapToEntity(role, request);
+        setAttributes(request, role);
 
         return roleMapper.mapToView(save(role));
     }
+
     @Override
     public void deleteById(Long id) {
         if (!roleRepository.existsById(id)) {

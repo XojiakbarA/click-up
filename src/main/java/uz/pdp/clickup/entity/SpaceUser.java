@@ -13,5 +13,5 @@ public class SpaceUser extends BaseEntity {
     private Space space;
 
     @ManyToOne(optional = false)
-    private User member;
+    private User person;
 }

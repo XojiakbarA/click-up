@@ -50,5 +50,5 @@ public class List extends BaseEntity {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
-    private Set<ListUser> members = new HashSet<>();
+    private Set<ListUser> persons = new HashSet<>();
 }

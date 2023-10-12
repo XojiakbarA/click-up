@@ -34,24 +34,68 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper userMapper;
 
-    private User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException(resourceName, "id", id)
-        );
-    }
-
-    @Override
-    public User create(String fullName, String email, String password, Long colorId, String roleName) {
+    private void checkToExistsByUsername(String email) {
         if (userRepository.existsByEmail(email)) {
             throw new ResourceExistsException(resourceName, "email", email);
         }
-        
+    }
+    private void checkToExistsByUsername(String email, Long id) {
+        if (userRepository.existsByEmailAndIdNot(email, id)) {
+            throw new ResourceExistsException(resourceName, "email", email);
+        }
+    }
+    private void setAttributes(UserRequest request, User user) {
+        if (request.getRoleId() != null) {
+            user.setRole(roleService.findById(request.getRoleId()));
+        }
+        if (request.getColorId() != null) {
+            user.setColor(colorService.findById(request.getColorId()));
+        }
+        if (request.getFullName() != null && !request.getFullName().isBlank()) {
+            user.setFullName(request.getFullName());
+        }
+        if (request.getEmail() != null && !request.getEmail().isBlank()) {
+            user.setEmail(request.getEmail());
+        }
+        if (request.getPassword() != null && !request.getPassword().isBlank()) {
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+        }
+    }
+
+    @Override
+    public Page<UserView> getAll(Pageable pageable) {
+        return userRepository.findAll(pageable).map(userMapper::mapToView);
+    }
+
+    @Override
+    public UserView getById(Long id) {
+        return userMapper.mapToView(findById(id));
+    }
+
+    @Override
+    public UserView create(UserRequest request) {
+        checkToExistsByUsername(request.getEmail());
+
+        User user = new User();
+
+        setAttributes(request, user);
+
+        return userMapper.mapToView(save(user));
+    }
+
+    @Override
+    public User create(String fullName, String email, String password, Boolean enabled, Long colorId, String roleName) {
+        if (userRepository.existsByEmail(email)) {
+            throw new ResourceExistsException(resourceName, "email", email);
+        }
+
         User user = new User();
 
         user.setFullName(fullName);
         user.setEmail(email);
         user.setPassword(passwordEncoder.encode(password));
         user.setRole(roleService.findByName(roleName));
+        user.setEnabled(enabled);
         if (colorId != null) {
             user.setColor(colorService.findById(colorId));
         }
@@ -65,45 +109,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserView> getAll(Pageable pageable) {
-        return userRepository.findAll(pageable).map(userMapper::mapToView);
-    }
-
-    @Override
-    public UserView getById(Long id) {
-        return userMapper.mapToView(findById(id));
-    }
-    private void checkToExistsByUsername(String email) {
-        if (userRepository.existsByEmail(email)) {
-            throw new ResourceExistsException(resourceName, "email", email);
-        }
-    }
-    private void checkToExistsByUsername(String email, Long id) {
-        if (userRepository.existsByEmailAndIdNot(email, id)) {
-            throw new ResourceExistsException(resourceName, "email", email);
-        }
-    }
-
-    @Override
-    public UserView create(UserRequest request) {
-        checkToExistsByUsername(request.getEmail());
-
-        User user = new User();
-
-        userMapper.mapToEntity(user, request);
-
-        return userMapper.mapToView(save(user));
-    }
-
-    @Override
     public UserView update(UserRequest request, Long id) {
         checkToExistsByUsername(request.getEmail(), id);
 
         User user = findById(id);
 
-        userMapper.mapToEntity(user, request);
+        setAttributes(request, user);
 
         return userMapper.mapToView(save(user));
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(resourceName, "id", id)
+        );
     }
 
     @Override

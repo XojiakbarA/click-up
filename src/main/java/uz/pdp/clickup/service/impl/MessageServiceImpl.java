@@ -8,6 +8,9 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
+import uz.pdp.clickup.entity.User;
+import uz.pdp.clickup.entity.Workspace;
+import uz.pdp.clickup.entity.WorkspaceUser;
 import uz.pdp.clickup.service.MessageService;
 
 @Service
@@ -37,5 +40,16 @@ public class MessageServiceImpl implements MessageService {
         Context context = new Context();
         context.setVariable("code", verifyCode);
         sendHtmlMessage(email, "Verify Email", "verify", context);
+    }
+
+    @Override
+    public void sendInviteMessage(String email, WorkspaceUser workspaceUser, String suggestedPersonFullName) {
+        Context context = new Context();
+        context.setVariable("code", workspaceUser.getJoinCode());
+        context.setVariable("workspaceName", workspaceUser.getWorkspace().getName());
+        context.setVariable("workspaceUserId", workspaceUser.getId());
+        context.setVariable("invitedPersonFullName", workspaceUser.getPerson().getFullName());
+        context.setVariable("suggestedPersonFullName", suggestedPersonFullName);
+        sendHtmlMessage(email, "Invite Message", "invite", context);
     }
 }

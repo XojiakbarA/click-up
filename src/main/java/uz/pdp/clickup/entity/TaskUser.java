@@ -20,7 +20,7 @@ public class TaskUser extends BaseEntity {
     private Task task;
 
     @ManyToOne(optional = false)
-    private User assignedUser;
+    private User person;
 
     @JsonIgnore
     @ToString.Exclude

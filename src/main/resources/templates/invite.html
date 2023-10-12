@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Invite Message</title>
+</head>
+<body>
+    <h3>Hello, <th:block th:text="${invitedPersonFullName}"/>, you have been invited to <th:block th:text="${workspaceName}"/> by <th:block th:text="${suggestedPersonFullName}"/>.</h3>
+    <h3>Join code:</h3>
+    <h1><th:block th:text="${code}"/></h1>
+    <h3>Workspace User ID:</h3>
+    <h1><th:block th:text="${workspaceUserId}"/></h1>
+</body>
+</html>

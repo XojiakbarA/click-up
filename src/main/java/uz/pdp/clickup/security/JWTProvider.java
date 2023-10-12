@@ -8,18 +8,14 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JWTProvider {
     private String secretKey = "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970";
-    private Long duration = 3600_000L;
+    private Long duration = 3600_000_000L;
 
-    public String generateToken(UserDetails userDetails) {
-        return generateToken(new HashMap<>(), userDetails);
-    }
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return buildToken(claims, userDetails, duration);
     }
