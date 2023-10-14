@@ -52,7 +52,7 @@ public class Space extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "space", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "space", cascade = CascadeType.ALL)
     private Set<SpaceUser> persons = new HashSet<>();
 
     @JsonIgnore

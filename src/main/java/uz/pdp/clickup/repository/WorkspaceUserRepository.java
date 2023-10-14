@@ -10,4 +10,5 @@ import java.util.List;
 public interface WorkspaceUserRepository extends JpaRepository<WorkspaceUser, Long> {
     boolean existsByWorkspaceIdAndPersonId(Long workspaceId, Long personId);
     List<WorkspaceUser> findAllByWorkspaceRoleNameAndWorkspaceId(String workspaceRoleName, Long workspaceId);
+    List<WorkspaceUser> findAllByWorkspaceId(Long workspaceId);
 }

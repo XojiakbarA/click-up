@@ -90,7 +90,7 @@ public class FolderServiceImpl implements FolderService {
             accessType = AccessType.valueOf(request.getAccessType().toUpperCase());
 
             if (accessType.equals(AccessType.PUBLIC)) {
-                persons = spaceUserService.findAll().stream()
+                persons = spaceUserService.findAllBySpaceId(space.getId()).stream()
                         .map(u -> new FolderUser(folder, u.getPerson(), TaskAuthorityType.FULL))
                         .collect(Collectors.toSet());
             }

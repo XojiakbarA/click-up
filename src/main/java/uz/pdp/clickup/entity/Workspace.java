@@ -47,7 +47,7 @@ public class Workspace extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @ManyToMany
+    @OneToMany(mappedBy = "workspace", cascade = CascadeType.REMOVE)
     private Set<Tag> tags = new HashSet<>();
 
     public Character getInitialLetter() {

@@ -129,7 +129,7 @@ public class SpaceServiceImpl implements SpaceService {
             accessType = AccessType.valueOf(request.getAccessType().toUpperCase());
 
             if (accessType.equals(AccessType.PUBLIC)) {
-                persons = workspaceUserService.findAll().stream()
+                persons = workspaceUserService.findAllByWorkspaceId(workspace.getId()).stream()
                         .map(u -> new SpaceUser(space, u.getPerson()))
                         .collect(Collectors.toSet());
             }

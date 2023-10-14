@@ -43,7 +43,7 @@ public class Folder extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "folder", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "folder", cascade = CascadeType.ALL)
     private Set<FolderUser> persons = new HashSet<>();
 
     @JsonIgnore

@@ -40,8 +40,8 @@ public class SpaceUserServiceImpl implements SpaceUserService {
     }
 
     @Override
-    public List<SpaceUser> findAll() {
-        return spaceUserRepository.findAll();
+    public List<SpaceUser> findAllBySpaceId(Long spaceId) {
+        return spaceUserRepository.findAllBySpaceId(spaceId);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class SpaceUserServiceImpl implements SpaceUserService {
 
     @Override
     public List<SpaceUserView> getAllBySpaceId(Long spaceId) {
-        return spaceUserRepository.findAllBySpaceId(spaceId).stream()
+        return findAllBySpaceId(spaceId).stream()
                 .map(spaceUserMapper::mapToView).toList();
     }
 

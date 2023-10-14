@@ -16,7 +16,7 @@ public class Attachment extends BaseEntity {
     private String originalName;
 
     @Column(nullable = false)
-    private Integer size;
+    private Long size;
 
     @Column(nullable = false)
     private String contentType;

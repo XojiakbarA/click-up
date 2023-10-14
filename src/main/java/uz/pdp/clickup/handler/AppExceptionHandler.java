@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import uz.pdp.clickup.dto.response.ErrorResponse;
+import uz.pdp.clickup.exception.OperationIsNotPossibleException;
 import uz.pdp.clickup.exception.ResourceExistsException;
 import uz.pdp.clickup.exception.ResourceNotFoundException;
 
@@ -29,6 +30,12 @@ public class AppExceptionHandler {
     @ExceptionHandler(ResourceExistsException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleResourceExists(ResourceExistsException e) {
+        return new ErrorResponse(e.getMessage());
+    }
+
+    @ExceptionHandler(OperationIsNotPossibleException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleOperationIsNotPossible(OperationIsNotPossibleException e) {
         return new ErrorResponse(e.getMessage());
     }
 

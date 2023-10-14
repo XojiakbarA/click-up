@@ -6,10 +6,10 @@ import uz.pdp.clickup.dto.view.WorkspaceUserView;
 import uz.pdp.clickup.entity.*;
 
 import java.util.List;
-import java.util.Set;
 
 public interface WorkspaceUserService {
-    Set<WorkspaceUser> findAll();
+    List<WorkspaceUser> findAllByWorkspaceId(Long workspaceId);
+
     List<WorkspaceUserView> getAllMembersByWorkspaceId(Long workspaceId);
 
     List<WorkspaceUserView> getAllGuestsByWorkspaceId(Long workspaceId);

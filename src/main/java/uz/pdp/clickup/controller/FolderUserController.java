@@ -25,7 +25,7 @@ public class FolderUserController {
 
     @PutMapping("/{id}/users/{spaceUserId}")
     @ResponseStatus(HttpStatus.OK)
-    public Response addSpaceUser(@PathVariable Long id, @PathVariable Long spaceUserId) {
+    public Response addFolderUser(@PathVariable Long id, @PathVariable Long spaceUserId) {
         FolderUserView folderUser = folderUserService.create(id, spaceUserId);
 
         return new Response(HttpStatus.OK.name(), folderUser);
@@ -33,7 +33,7 @@ public class FolderUserController {
 
     @DeleteMapping("/users/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public Response removeSpaceUser(@PathVariable Long id) {
+    public Response removeFolderUser(@PathVariable Long id) {
         folderUserService.deleteById(id);
 
         return new Response(HttpStatus.ACCEPTED.name());

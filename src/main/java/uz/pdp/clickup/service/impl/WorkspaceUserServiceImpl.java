@@ -149,4 +149,8 @@ public class WorkspaceUserServiceImpl implements WorkspaceUserService {
 
         messageService.sendInviteMessage(request.getEmail(), workspaceUser, authService.getAuthUser().getFullName());
     }
+    @Override
+    public List<WorkspaceUser> findAllByWorkspaceId(Long workspaceId) {
+        return workspaceUserRepository.findAllByWorkspaceId(workspaceId);
+    }
 }

@@ -31,12 +31,6 @@ public class FolderUserServiceImpl implements FolderUserService {
     @Autowired
     private SpaceUserService spaceUserService;
 
-    private FolderUser findById(Long id) {
-        if (id == null) return null;
-        return folderUserRepository.findById(id).orElseThrow(
-                () -> new ResourceNotFoundException(resourceName, "id", id)
-        );
-    }
     private FolderUser save(FolderUser folderUser) {
         return folderUserRepository.save(folderUser);
     }
@@ -70,5 +64,18 @@ public class FolderUserServiceImpl implements FolderUserService {
             throw new ResourceNotFoundException(resourceName, "id", id);
         }
         folderUserRepository.deleteById(id);
+    }
+    
+    @Override
+    public List<FolderUser> findAllByFolderId(Long folderId) {
+        return folderUserRepository.findAllByFolderId(folderId);
+    }
+
+    @Override
+    public FolderUser findById(Long id) {
+        if (id == null) return null;
+        return folderUserRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(resourceName, "id", id)
+        );
     }
 }

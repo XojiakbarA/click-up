@@ -49,6 +49,12 @@ public class List extends BaseEntity {
     @JsonIgnore
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "list", cascade = CascadeType.ALL)
     private Set<ListUser> persons = new HashSet<>();
+
+    @JsonIgnore
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @OneToMany(mappedBy = "list", cascade = CascadeType.REMOVE)
+    private Set<Status> statuses = new HashSet<>();
 }
