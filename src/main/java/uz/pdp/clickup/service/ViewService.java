@@ -20,4 +20,6 @@ public interface ViewService {
     ViewView updateById(ViewRequest request, Long id);
 
     void deleteById(Long id);
+
+    List<ViewView> getAllBySpaceId(Long id);
 }

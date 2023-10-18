@@ -104,5 +104,10 @@ public class ViewServiceImpl implements ViewService {
 
         viewRepository.deleteById(id);
     }
-    
+
+    @Override
+    public List<ViewView> getAllBySpaceId(Long id) {
+        return viewRepository.findAllBySpacesId(id).stream().map(viewMapper::mapToView).toList();
+    }
+
 }

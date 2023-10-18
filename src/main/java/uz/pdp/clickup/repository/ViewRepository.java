@@ -1,5 +1,6 @@
 package uz.pdp.clickup.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -12,4 +13,5 @@ public interface ViewRepository extends JpaRepository<View, Long> {
     boolean existsByName(String name);
     boolean existsByNameAndIdNot(String name, Long id);
     Optional<View> findByName(String name);
+    List<View> findAllBySpacesId(Long id);
 }

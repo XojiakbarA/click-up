@@ -10,8 +10,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import jakarta.persistence.UniqueConstraint;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -19,7 +17,6 @@ import lombok.ToString;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @Entity(name = "checklists")
-@Table(uniqueConstraints = { @UniqueConstraint(columnNames = { "name", "task_id" }) })
 public class Checklist extends BaseEntity {
     @Column(nullable = false)
     private String name;

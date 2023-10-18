@@ -19,8 +19,10 @@ import jakarta.validation.Valid;
 import uz.pdp.clickup.dto.request.SpaceRequest;
 import uz.pdp.clickup.dto.response.Response;
 import uz.pdp.clickup.dto.view.SpaceView;
+import uz.pdp.clickup.dto.view.ViewView;
 import uz.pdp.clickup.marker.OnCreate;
 import uz.pdp.clickup.service.SpaceService;
+import uz.pdp.clickup.service.ViewService;
 
 @Validated
 @RestController
@@ -28,6 +30,8 @@ import uz.pdp.clickup.service.SpaceService;
 public class SpaceController {
     @Autowired
     private SpaceService spaceService;
+    @Autowired
+    private ViewService viewService;
 
     @GetMapping("/workspaces/{id}/spaces")
     @ResponseStatus(HttpStatus.OK)
@@ -35,6 +39,14 @@ public class SpaceController {
         List<SpaceView> spaces = spaceService.getAllSpacesByWorkspaceId(id);
 
         return new Response(HttpStatus.OK.name(), spaces);
+    }
+
+    @GetMapping("/spaces/{id}/views")
+    @ResponseStatus(HttpStatus.OK)
+    public Response getAllViewsBySpaceId(@PathVariable Long id) {
+        List<ViewView> views = viewService.getAllBySpaceId(id);
+
+        return new Response(HttpStatus.OK.name(), views);
     }
 
     @GetMapping("/spaces/{id}")
